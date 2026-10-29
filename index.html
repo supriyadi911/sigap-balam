@@ -23,6 +23,24 @@
             --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             --sidebar-width: 250px;
+            --input-bg: #ffffff;
+            --hover-bg: #f4f4f4;
+            --table-hover: #fafafa;
+            --table-th-bg: #f9fafb;
+        }
+
+        body.dark-mode {
+            --bg-body: #121212;
+            --bg-sidebar: #1e1e1e;
+            --bg-card: #1e1e1e;
+            --text-main: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --border: #333333;
+            --input-bg: #2d2d2d;
+            --hover-bg: #2d2d2d;
+            --table-hover: #2a2a2a;
+            --table-th-bg: #252525;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
         }
 
         /* Reset & Base */
@@ -51,7 +69,7 @@
         .nav-link:hover { color: var(--primary); background: rgba(15,98,254,0.05); }
         .nav-link.active { color: var(--primary); background: rgba(15,98,254,0.1); }
         
-        .landing-hero { flex: 1; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8rem 1rem 10rem 1rem; background: radial-gradient(circle at top, #f0f4ff 0%, #ffffff 80%); position: relative; overflow: hidden;}
+        .landing-hero { flex: 1; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8rem 1rem 10rem 1rem; background: linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)), url('https://i.imgur.com/bY3fkJz.png') center/cover no-repeat; position: relative; overflow: hidden;}
         /* Decorative Background Elements */
         .landing-hero::before { content: ''; position: absolute; width: 600px; height: 600px; background: linear-gradient(135deg, rgba(15,98,254,0.1) 0%, rgba(218,30,40,0.05) 100%); border-radius: 50%; top: -200px; left: -200px; filter: blur(60px); z-index: 0; }
         .landing-hero::after { content: ''; position: absolute; width: 500px; height: 500px; background: linear-gradient(135deg, rgba(25,128,56,0.05) 0%, rgba(15,98,254,0.1) 100%); border-radius: 50%; bottom: -100px; right: -100px; filter: blur(60px); z-index: 0; }
@@ -79,6 +97,7 @@
         
         .landing-section { padding: 5rem 5%; }
         .landing-section.alt { background: #f9fafb; }
+        #perpustakaan-terbuka-section { background: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)), url('https://i.imgur.com/Q3ABH2d.png') center/cover no-repeat; }
         .landing-section-title { text-align: center; margin-bottom: 1rem; font-size: 2.5rem; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; }
         .landing-section-subtitle { text-align: center; color: var(--text-muted); margin-bottom: 3.5rem; font-size: 1.1rem; max-width: 600px; margin-left: auto; margin-right: auto; }
         
@@ -112,7 +131,7 @@
         .sidebar-header h2 { margin: 0; font-size: 1.2rem; color: var(--primary); }
         .sidebar-menu { flex: 1; overflow-y: auto; padding: 1rem 0; }
         .menu-item { padding: 0.75rem 1.5rem; display: flex; align-items: center; gap: 12px; color: var(--text-muted); font-weight: 500; transition: 0.2s; border-left: 3px solid transparent; }
-        .menu-item:hover, .menu-item.active { background: #f4f4f4; color: var(--primary); border-left-color: var(--primary); }
+        .menu-item:hover, .menu-item.active { background: var(--hover-bg); color: var(--primary); border-left-color: var(--primary); }
         .menu-item svg { width: 18px; height: 18px; fill: currentColor; }
         .sidebar-footer { padding: 1rem; border-top: 1px solid var(--border); }
         .user-info { display: flex; flex-direction: column; font-size: 0.85rem; }
@@ -151,7 +170,7 @@
         /* Form */
         .form-group { margin-bottom: 1rem; }
         .form-label { display: block; margin-bottom: 0.5rem; font-weight: 500; color: var(--text-main); font-size: 0.9rem;}
-        .form-control { width: 100%; padding: 0.6rem; border: 1px solid var(--border); border-radius: 6px; background: #fff; transition: 0.2s; font-size: 0.95rem;}
+        .form-control { width: 100%; padding: 0.6rem; border: 1px solid var(--border); border-radius: 6px; background: var(--input-bg); color: var(--text-main); transition: 0.2s; font-size: 0.95rem;}
         .form-control:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 2px rgba(15,98,254,0.2); }
         .form-row { display: flex; gap: 1rem; }
         .form-row > div { flex: 1; }
@@ -218,10 +237,38 @@
         /* Utility */
         .hidden { display: none !important; }
         .empty-state { text-align: center; padding: 3rem 1rem; color: var(--text-muted); }
-        .empty-state svg { width: 48px; height: 48px; fill: #ccc; margin-bottom: 1rem; }
+        .empty-state svg { width: 48px; height: 48px; fill: var(--border); margin-bottom: 1rem; }
+        .mobile-icon { display: none; }
+
+        /* Icon Buttons Header */
+        .icon-btn { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 50%; background: transparent; color: var(--text-muted); transition: 0.2s; }
+        .icon-btn:hover { background: rgba(0,0,0,0.05); color: var(--primary); }
+        body.dark-mode .icon-btn:hover { background: rgba(255,255,255,0.1); }
+        .icon-btn svg { width: 18px; height: 18px; fill: currentColor; }
+
+        /* Dark Mode Overrides */
+        body.dark-mode .landing-nav { background: rgba(30, 30, 30, 0.85); border-bottom-color: var(--border); }
+        body.dark-mode .landing-hero { background: linear-gradient(rgba(18,18,18,0.85), rgba(18,18,18,0.85)), url('https://i.imgur.com/bY3fkJz.png') center/cover no-repeat; }
+        body.dark-mode .landing-hero::before, body.dark-mode .landing-hero::after { opacity: 0.3; }
+        body.dark-mode .landing-features { background: var(--bg-body); }
+        body.dark-mode .landing-features .feature-card { background: var(--bg-card); border-color: var(--border); }
+        body.dark-mode .landing-section.alt { background: #181818; }
+        body.dark-mode #perpustakaan-terbuka-section { background: linear-gradient(rgba(18, 18, 18, 0.85), rgba(18, 18, 18, 0.85)), url('https://i.imgur.com/Q3ABH2d.png') center/cover no-repeat !important; }
+        body.dark-mode .modern-card { background: var(--bg-card) !important; }
+        body.dark-mode .auth-card { background: var(--bg-card); }
+        body.dark-mode .btn-secondary { background: var(--bg-card); color: var(--text-main); border-color: var(--border); }
+        body.dark-mode .btn-secondary:hover { background: var(--hover-bg); border-color: var(--text-muted); }
+        body.dark-mode th { background: var(--table-th-bg); }
+        body.dark-mode tbody tr:hover { background: var(--table-hover); }
+        body.dark-mode #public-city-logo, body.dark-mode #profil-logo-display { background: var(--bg-body) !important; }
+        body.dark-mode .local-warning { background: #332b00; color: #f1c21b; border-bottom-color: #855a00; }
+        body.dark-mode #splash-screen { background: linear-gradient(rgba(18,18,18,0.85), rgba(18,18,18,0.85)), url('https://i.imgur.com/bY3fkJz.png') center/cover no-repeat !important; }
+        body.dark-mode .stats-banner { box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+        body.dark-mode .landing-nav-links { background: var(--bg-sidebar); }
+        body.dark-mode [style*="background: #f9fafb"], body.dark-mode [style*="background:#f9fafb"], body.dark-mode [style*="background: #ffffff"], body.dark-mode [style*="background:#ffffff"], body.dark-mode [style*="background: white"], body.dark-mode [style*="background:#fff"], body.dark-mode [style*="background: #f4f4f4"], body.dark-mode [style*="background:#f4f4f4"] { background-color: var(--bg-card) !important; }
 
         /* Splash Screen */
-        #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #ffffff; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; transition: opacity 0.5s ease, visibility 0.5s ease; }
+        #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)), url('https://i.imgur.com/bY3fkJz.png') center/cover no-repeat; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; transition: opacity 0.5s ease, visibility 0.5s ease; }
         #splash-screen.fade-out { opacity: 0; visibility: hidden; }
         .splash-logo { width: auto; height: 100px; max-width: 90%; animation: pulse 2s infinite; margin-bottom: 20px; }
         .splash-title { font-size: 2rem; font-weight: 800; color: var(--primary); letter-spacing: -0.5px; margin-bottom: 10px; background: linear-gradient(135deg, #0f62fe 0%, #003ebd 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;}
@@ -243,17 +290,110 @@
             body { font-size: 13px; }
             .db-indicator .hidden-mobile { display: none !important; }
             
-            /* Navbar & Header */
-            .landing-nav { padding: 0.8rem 5%; }
-            .landing-logo img { height: 30px !important; }
-            .landing-nav-links { gap: 6px; flex-wrap: wrap; justify-content: center; width: 100%; margin-top: 10px; }
-            .nav-link { padding: 0.3rem 0.5rem; font-size: 0.85rem; }
+            /* Navbar & Header Landing Page */
+            .landing-nav { padding: 0.8rem 1rem; justify-content: space-between; }
+            .landing-logo img { height: 32px !important; }
+            .mobile-icon { display: block; margin: 0 auto 4px auto; width: 22px; height: 22px; fill: currentColor; }
             
-            /* Sidebar Navigation */
-            #sidebar { position: fixed; height: 100%; transform: translateX(-100%); }
-            #sidebar.open { transform: translateX(0); box-shadow: 4px 0 15px rgba(0,0,0,0.1); }
-            #menu-toggle { display: block; margin-right: 10px; }
-            .sidebar-header img { height: 35px !important; }
+            /* Sticky Bottom Nav untuk Landing Page */
+            .landing-nav-links { 
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                height: 65px;
+                background: var(--bg-sidebar);
+                border-top: 1px solid var(--border);
+                box-shadow: 0 -4px 15px rgba(0,0,0,0.05);
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0 10px;
+                margin: 0;
+                z-index: 1000;
+                flex-wrap: nowrap;
+                gap: 2px;
+            }
+            .landing-nav-links .nav-link { 
+                flex: 1;
+                padding: 5px 2px;
+                font-size: 0.65rem;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                height: 100%;
+                border-radius: 0;
+                border-bottom: 3px solid transparent;
+                text-align: center;
+                line-height: 1.2;
+            }
+            .landing-nav-links .nav-link.active {
+                background: rgba(15, 98, 254, 0.05);
+                border-bottom-color: var(--primary);
+            }
+            .nav-divider { display: none !important; }
+            
+            .landing-nav-links .btn {
+                font-size: 0.75rem;
+                padding: 6px 12px;
+                white-space: nowrap;
+            }
+            
+            /* App Bottom Navigation for Mobile (Menu Aplikasi) */
+            #sidebar { 
+                position: fixed; 
+                bottom: 0; 
+                top: auto;
+                left: 0; 
+                width: 100%; 
+                height: 65px; 
+                transform: none; 
+                flex-direction: row; 
+                border-right: none; 
+                border-top: 1px solid var(--border); 
+                box-shadow: 0 -4px 15px rgba(0,0,0,0.05); 
+                z-index: 1000; 
+                background: var(--bg-sidebar);
+            }
+            #sidebar.open { transform: none; box-shadow: 0 -4px 15px rgba(0,0,0,0.05); }
+            .sidebar-header, .sidebar-footer { display: none; }
+            .sidebar-menu { 
+                display: flex; 
+                flex-direction: row; 
+                overflow-x: auto; 
+                overflow-y: hidden; 
+                padding: 0; 
+                width: 100%;
+                -webkit-overflow-scrolling: touch; 
+                scrollbar-width: none; 
+            }
+            .sidebar-menu::-webkit-scrollbar { display: none; }
+            .sidebar-menu li { flex: 0 0 auto; }
+            .menu-item { 
+                flex-direction: column; 
+                padding: 6px 4px; 
+                font-size: 0.65rem; 
+                gap: 4px; 
+                border-left: none !important; 
+                border-bottom: 3px solid transparent; 
+                height: 100%; 
+                min-width: 76px; 
+                justify-content: center; 
+                align-items: center;
+                text-align: center;
+                white-space: normal;
+                line-height: 1.1;
+            }
+            .menu-item:hover, .menu-item.active { 
+                border-bottom-color: var(--primary); 
+                background: rgba(15, 98, 254, 0.05); 
+            }
+            .menu-item svg { width: 22px; height: 22px; margin: 0; display: block; }
+            
+            #menu-toggle { display: none !important; }
+            #content-area { padding-bottom: 80px; } /* Memberi ruang agar konten tidak tertutup nav bottom */
+            
             #topbar { padding: 0.75rem 1rem; }
 
             /* Forms & Modals */
@@ -308,7 +448,7 @@
             .splash-subtitle { font-size: 0.9rem; }
             
             /* Footer */
-            .landing-footer { padding: 3rem 5% 1rem 5%; }
+            .landing-footer { padding: 3rem 5% 85px 5%; }
             .footer-grid { gap: 1.5rem; grid-template-columns: 1fr; }
             .footer-col h4 { margin-bottom: 1rem; font-size: 1rem; }
             .footer-about p { font-size: 0.85rem; }
@@ -338,16 +478,34 @@
                 <img src="https://i.imgur.com/658QV8h.png" alt="Logo" style="height: 45px; width: auto; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));">
                 <span id="landing-brand-name" class="hidden">KOMBEL GURU</span>
             </div>
-        <div class="landing-nav-links">
-            <div class="db-indicator" title="Menyambungkan ke Server..." style="margin-right: 5px;">
-                <span class="dot"></span> <span class="text db-text hidden-mobile">Menyambungkan...</span>
-            </div>
-            <a href="#" onclick="switchLandingView('home'); return false;" class="nav-link active" id="nav-home">Beranda</a>
-                <a href="#" onclick="switchLandingView('profile'); return false;" class="nav-link" id="nav-profile">Profil Kombel</a>
-                <a href="https://komunitasgtkbdl.github.io/riang-v4/" target="_blank" class="nav-link" id="nav-riang">RIANG</a>
-                <div style="width: 1px; height: 20px; background: var(--border); margin: 0 5px;"></div>
-                <button class="btn btn-secondary btn-sm" onclick="showLogin()">Masuk</button>
-                <button class="btn btn-primary btn-sm" style="border-radius: 50px;" onclick="showRegisterFromLanding()">Daftar</button>
+            
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div class="header-actions" style="display: flex; gap: 5px;">
+                    <button type="button" class="icon-btn theme-toggle" onclick="toggleTheme()" title="Mode Gelap/Terang"></button>
+                    <button type="button" class="icon-btn fullscreen-toggle" onclick="toggleFullscreen()" title="Layar Penuh"></button>
+                </div>
+                
+                <div class="db-indicator" title="Menyambungkan ke Server...">
+                    <span class="dot"></span> <span class="text db-text hidden-mobile">Menyambungkan...</span>
+                </div>
+                
+                <div class="landing-nav-links">
+                    <a href="#" onclick="switchLandingView('home'); return false;" class="nav-link active" id="nav-home">
+                        <svg class="mobile-icon" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                        <span>Beranda</span>
+                    </a>
+                    <a href="#" onclick="switchLandingView('profile'); return false;" class="nav-link" id="nav-profile">
+                        <svg class="mobile-icon" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                        <span>Profil</span>
+                    </a>
+                    <a href="https://komunitasgtkbdl.github.io/riang-v4/" target="_blank" class="nav-link">
+                        <svg class="mobile-icon" viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>
+                        <span>RIANG</span>
+                    </a>
+                    <div class="nav-divider" style="width: 1px; height: 20px; background: var(--border); margin: 0 5px;"></div>
+                    <button class="btn btn-secondary btn-sm" onclick="showLogin()">Masuk</button>
+                    <button class="btn btn-primary btn-sm" style="border-radius: 50px;" onclick="showRegisterFromLanding()">Daftar</button>
+                </div>
             </div>
         </nav>
 
@@ -359,7 +517,6 @@
                     <p id="landing-subtitle-display">Tingkatkan kualitas pembelajaran melalui komunitas belajar yang terstruktur, interaktif, dan saling memberdayakan tingkat kota dan kecamatan.</p>
                     <div class="hero-actions">
                         <button class="btn btn-primary" style="border-radius: 50px;" onclick="showRegisterFromLanding()">Bergabung Sekarang</button>
-                        <button class="btn btn-secondary" style="border-radius: 50px;" onclick="document.querySelector('.landing-features').scrollIntoView({behavior: 'smooth'})">Pelajari Fitur</button>
                         <button class="btn btn-secondary" style="border-radius: 50px; border-color: var(--primary); color: var(--primary);" onclick="openPanduanModal()">Pelajari Aplikasi</button>
                     </div>
                 </div>
@@ -405,7 +562,7 @@
         </section>
 
         <!-- Bagian Materi Terbuka -->
-        <section class="landing-section">
+        <section class="landing-section" id="perpustakaan-terbuka-section">
             <h2 class="landing-section-title">Perpustakaan Terbuka</h2>
             <p class="landing-section-subtitle">Akses dan unduh berbagai modul ajar, RPP, dan sumber belajar unggulan secara publik untuk mendukung pembelajaran Anda.</p>
             <div id="landing-public-materials" class="public-grid">
@@ -615,6 +772,10 @@
                         <h2 id="page-title" style="margin: 0; font-size: 1.2rem;">Dashboard</h2>
                     </div>
                     <div class="topbar-right">
+                        <div class="header-actions" style="display: flex; gap: 5px; margin-right: 5px;">
+                            <button type="button" class="icon-btn theme-toggle" onclick="toggleTheme()" title="Mode Gelap/Terang"></button>
+                            <button type="button" class="icon-btn fullscreen-toggle" onclick="toggleFullscreen()" title="Layar Penuh"></button>
+                        </div>
                         <div class="db-indicator" title="Menyambungkan ke Server..." style="margin-right: 5px;">
                             <span class="dot"></span> <span class="text db-text hidden-mobile">Menyambungkan...</span>
                         </div>
@@ -1631,7 +1792,7 @@
                 <h3>Panduan Lengkap Penggunaan SIGAP BALAM</h3>
                 <button class="close-modal" onclick="closeModal('modal-panduan')">&times;</button>
             </div>
-            <div style="flex: 1; overflow-y: auto; padding-right: 15px; line-height: 1.7; color: var(--text-main); font-size: 0.95rem;">
+            <div id="panduan-content-body" style="flex: 1; overflow-y: auto; padding-right: 15px; line-height: 1.7; color: var(--text-main); font-size: 0.95rem;">
                 
                 <div style="margin-bottom: 1.5rem;">
                     <p>Selamat datang di aplikasi <strong>SIGAP BALAM (Sinergi Guru Aktif & Progresif Bandar Lampung)</strong>. Berikut adalah rincian fungsionalitas menu berdasarkan peran (jabatan) akun Anda di dalam sistem:</p>
@@ -1691,7 +1852,7 @@
 
             </div>
             <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-                <button class="btn btn-primary" onclick="showNotification('File PDF panduan sedang dalam penyusunan dan akan segera tersedia untuk diunduh.', 'info')">
+                <button class="btn btn-primary" onclick="downloadPanduanPDF()">
                     <svg viewBox="0 0 24 24" style="width: 18px; height: 18px; fill: currentColor; margin-right: 8px; vertical-align: middle;"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
                     Unduh Panduan (PDF)
                 </button>
@@ -2018,7 +2179,7 @@
                 document.getElementById('public-city-proker').textContent = city.program_kerja || 'Belum ada program kerja yang diunggah.';
                 
                 const defaultLogo = `<svg width="32" height="32" viewBox="0 0 24 24" fill="#ccc"><path d="M12 2L1 7v2h22V7L12 2zm0 2.84L17.93 7H6.07L12 4.84zM3 10h3v7H3v-7zm6 0h3v7H9v-7zm6 0h3v7h-3v-7zm6 0h3v7h-3v-7zM2 19h20v2H2v-2z"/></svg>`;
-                document.getElementById('public-city-logo').innerHTML = city.logo ? `<img src="${city.logo}" style="width:100%; height:100%; object-fit:cover;" onerror="this.outerHTML='${defaultLogo}'">` : defaultLogo;
+                document.getElementById('public-city-logo').innerHTML = city.logo ? `<img src="${city.logo}" style="width:100%; height:100%; object-fit:cover;" onerror="this.outerHTML='${defaultLogo}` : defaultLogo;
             }
 
             const sel = document.getElementById('public-kecamatan-select');
@@ -2803,6 +2964,42 @@
             printWindow.document.close();
         }
 
+        function downloadPanduanPDF() {
+            const contentHTML = document.getElementById('panduan-content-body').innerHTML;
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>Panduan Penggunaan Aplikasi</title>
+                    <style>
+                        body { font-family: sans-serif; line-height: 1.6; padding: 30px; color: #333; max-width: 800px; margin: 0 auto; }
+                        h4 { margin-top: 20px; margin-bottom: 10px; }
+                        ul { padding-left: 20px; margin: 0; }
+                        li { margin-bottom: 10px; }
+                        strong { color: #000; }
+                        @media print {
+                            @page { margin: 1.5cm; }
+                            body { padding: 0; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <h2 style="text-align: center; border-bottom: 2px solid #ccc; padding-bottom: 10px; color: #0f62fe;">
+                        Panduan Lengkap Penggunaan SIGAP BALAM
+                    </h2>
+                    ${contentHTML}
+                    <script>
+                        window.onload = function() {
+                            // Memberi sedikit jeda agar perenderan warna dan gaya selesai sebelum dicetak
+                            setTimeout(function() { window.print(); }, 500);
+                        }
+                    <\/script>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+        }
+
         // --- TUGAS KOMUNITAS ---
         function renderTasks() {
             const tbody = document.querySelector('#table-tasks tbody');
@@ -3090,7 +3287,51 @@
             document.getElementById('btn-show-login').addEventListener('click', (e) => { e.preventDefault(); document.getElementById('form-register').classList.add('hidden'); document.getElementById('form-login').classList.remove('hidden'); });
             document.getElementById('menu-toggle').addEventListener('click', () => { document.getElementById('sidebar').classList.toggle('open'); });
             
+            // Init Theme & Icons
+            const savedTheme = localStorage.getItem('kombel_theme');
+            if (savedTheme === 'dark') document.body.classList.add('dark-mode');
+            updateThemeIcons(document.body.classList.contains('dark-mode'));
+            
+            const enterIcon = `<svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>`;
+            document.querySelectorAll('.fullscreen-toggle').forEach(btn => btn.innerHTML = enterIcon);
+
             checkAuth();
+        });
+
+        // --- THEME & FULLSCREEN ---
+        function toggleTheme() {
+            const body = document.body;
+            body.classList.toggle('dark-mode');
+            const isDark = body.classList.contains('dark-mode');
+            localStorage.setItem('kombel_theme', isDark ? 'dark' : 'light');
+            updateThemeIcons(isDark);
+        }
+
+        function updateThemeIcons(isDark) {
+            const sunIcon = `<svg viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"/></svg>`;
+            const moonIcon = `<svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4C12.92 3.04 12.46 3 12 3zm0 16c-3.86 0-7-3.14-7-7s3.14-7 7-7c.18 0 .35.02.52.05-.33 1.08-.52 2.24-.52 3.45 0 3.12 1.3 5.92 3.4 7.93-1.04.99-2.47 1.57-4 1.57z"/></svg>`;
+            document.querySelectorAll('.theme-toggle').forEach(btn => {
+                btn.innerHTML = isDark ? sunIcon : moonIcon;
+            });
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log(`Error attempting to enable fullscreen: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        document.addEventListener('fullscreenchange', () => {
+            const isFull = !!document.fullscreenElement;
+            const enterIcon = `<svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>`;
+            const exitIcon = `<svg viewBox="0 0 24 24"><path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/></svg>`;
+            document.querySelectorAll('.fullscreen-toggle').forEach(btn => {
+                btn.innerHTML = isFull ? exitIcon : enterIcon;
+            });
         });
     </script>
 </body>
