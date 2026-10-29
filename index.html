@@ -885,6 +885,7 @@
                         <div class="card">
                             <div class="card-header">
                                 <h3>Direktori Anggota</h3>
+                                <button class="btn btn-primary btn-sm role-restricted role-admin_kota role-admin_kec" onclick="openAddMemberModal()">+ Tambah Anggota</button>
                             </div>
                             <div style="margin-bottom: 1rem; display: flex; gap: 10px; flex-wrap: wrap;">
                                 <input type="text" id="filter-member-name" class="form-control" placeholder="Cari nama atau sekolah..." style="width: 220px;" oninput="renderMembers()">
@@ -1315,7 +1316,7 @@
     <div class="modal-overlay" id="modal-edit-member">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Edit Data Anggota</h3>
+                <h3 id="modal-member-heading">Edit Data Anggota</h3>
                 <button class="close-modal" onclick="closeModal('modal-edit-member')">&times;</button>
             </div>
             <form id="form-edit-member" onsubmit="handleFormEditMember(event)">
@@ -2709,8 +2710,35 @@
             });
         }
         function approveMember(id) { const u = db.users.find(u=>u.id==id); if(u) showConfirm('Setujui', `Setujui ${u.name}?`, () => { u.status = 'aktif'; saveDB(); renderMembers(); showNotification('Disetujui', 'success'); }); }
+        
+        function openAddMemberModal() {
+            document.getElementById('form-edit-member').reset();
+            document.getElementById('edit-member-id').value = '';
+            document.getElementById('modal-member-heading').textContent = 'Tambah Anggota Baru';
+            
+            const commSel = document.getElementById('edit-member-community'); 
+            commSel.innerHTML = '<option value="">-- Pilih Kecamatan --</option>';
+            db.communities.forEach(c => commSel.innerHTML += `<option value="${c.id}">${c.name}</option>`);
+            
+            if(currentUser.role === 'admin_kec') {
+                commSel.value = currentUser.community_id;
+                commSel.disabled = true;
+                document.getElementById('edit-member-role').value = 'anggota';
+                document.getElementById('edit-member-role').disabled = true;
+            } else {
+                commSel.value = '';
+                commSel.disabled = false;
+                document.getElementById('edit-member-role').value = 'anggota';
+                document.getElementById('edit-member-role').disabled = false;
+            }
+            
+            document.getElementById('edit-member-status').value = 'aktif';
+            openModal('modal-edit-member');
+        }
+
         function openEditMemberModal(id) {
             const u = db.users.find(u=>u.id==id); if(!u) return;
+            document.getElementById('modal-member-heading').textContent = 'Edit Data Anggota';
             document.getElementById('edit-member-id').value = u.id; document.getElementById('edit-member-name').value = u.name;
             document.getElementById('edit-member-school').value = u.school; document.getElementById('edit-member-status').value = u.status;
             
@@ -2723,20 +2751,48 @@
             commSel.disabled = currentUser.role === 'admin_kec'; document.getElementById('edit-member-role').disabled = currentUser.role === 'admin_kec' || u.id == currentUser.id;
             openModal('modal-edit-member');
         }
+
         function handleFormEditMember(e) {
-            e.preventDefault(); const u = db.users.find(u=>u.id==document.getElementById('edit-member-id').value);
-            
+            e.preventDefault(); 
+            const id = document.getElementById('edit-member-id').value;
             const newUsername = document.getElementById('edit-member-username').value.trim();
-            const existingUser = db.users.find(user => user.username === newUsername && user.id != u.id);
+            
+            const existingUser = db.users.find(user => user.username === newUsername && user.id != id);
             if(existingUser) { showNotification('Username sudah digunakan oleh akun lain.', 'error'); return; }
             
-            u.name = document.getElementById('edit-member-name').value; u.school = document.getElementById('edit-member-school').value; u.status = document.getElementById('edit-member-status').value;
-            u.username = newUsername;
-            u.password = document.getElementById('edit-member-password').value;
+            if (id) {
+                // Proses Edit Data Lama
+                const u = db.users.find(u=>u.id==id);
+                u.name = document.getElementById('edit-member-name').value; u.school = document.getElementById('edit-member-school').value; u.status = document.getElementById('edit-member-status').value;
+                u.username = newUsername;
+                u.password = document.getElementById('edit-member-password').value;
+                
+                if(currentUser.role === 'admin_kota'){ u.community_id = document.getElementById('edit-member-community').value; if(u.id!=currentUser.id) u.role = document.getElementById('edit-member-role').value; }
+            } else {
+                // Proses Tambah Data Baru
+                const newUser = {
+                    id: generateId(),
+                    name: document.getElementById('edit-member-name').value,
+                    school: document.getElementById('edit-member-school').value,
+                    status: document.getElementById('edit-member-status').value,
+                    username: newUsername,
+                    password: document.getElementById('edit-member-password').value,
+                    role: document.getElementById('edit-member-role').value,
+                    community_id: document.getElementById('edit-member-community').value
+                };
+                
+                // Pastikan Admin Kecamatan tidak bisa menyisipkan status atau kecamatan lain
+                if(currentUser.role === 'admin_kec') {
+                    newUser.role = 'anggota';
+                    newUser.community_id = currentUser.community_id;
+                }
+                
+                db.users.push(newUser);
+            }
             
-            if(currentUser.role === 'admin_kota'){ u.community_id = document.getElementById('edit-member-community').value; if(u.id!=currentUser.id) u.role = document.getElementById('edit-member-role').value; }
-            saveDB(); closeModal('modal-edit-member'); renderMembers(); showNotification('Berhasil disimpan.', 'success');
+            saveDB(); closeModal('modal-edit-member'); renderMembers(); showNotification('Data anggota berhasil disimpan.', 'success');
         }
+
         function deleteMember(id) { showConfirm('Hapus Anggota', 'Yakin menghapus?', () => { db.users = db.users.filter(u=>u.id!=id); saveDB(); renderMembers(); }); }
 
         // --- KEGIATAN ---
