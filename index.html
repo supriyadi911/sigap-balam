@@ -531,12 +531,12 @@
             <form id="form-login" class="auth-form">
                 <div class="form-group">
                     <label class="form-label">Username / Email</label>
-                    <input type="text" id="login-username" class="form-control" required placeholder="Contoh: admin_kota atau guru_budi">
+                    <input type="text" id="login-username" class="form-control" required>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Kata Sandi</label>
                     <div class="password-wrapper">
-                        <input type="password" id="login-password" class="form-control" required placeholder="Gunakan sandi: 12345">
+                        <input type="password" id="login-password" class="form-control" required>
                         <button type="button" class="password-toggle" onclick="togglePasswordVisibility('login-password', this)" title="Tampilkan/Sembunyikan Kata Sandi">
                             <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
                         </button>
@@ -1139,6 +1139,21 @@
                     <label class="form-label">Asal Sekolah</label>
                     <input type="text" id="edit-member-school" class="form-control" required>
                 </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Username</label>
+                        <input type="text" id="edit-member-username" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Kata Sandi</label>
+                        <div class="password-wrapper">
+                            <input type="password" id="edit-member-password" class="form-control" required>
+                            <button type="button" class="password-toggle" onclick="togglePasswordVisibility('edit-member-password', this)" title="Tampilkan/Sembunyikan Kata Sandi">
+                                <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
                 <div class="form-group" id="group-edit-community">
                     <label class="form-label">Komunitas / Kecamatan</label>
                     <select id="edit-member-community" class="form-control" required></select>
@@ -1215,6 +1230,13 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label class="form-label">Target Peserta</label>
+                    <select id="input-event-target" class="form-control" required>
+                        <option value="semua">Semua Anggota & Guru</option>
+                        <option value="admin_kec">Khusus Admin Kecamatan</option>
+                    </select>
+                </div>
+                <div class="form-group">
                     <label class="form-label">Deskripsi & Sasaran Peserta</label>
                     <textarea id="input-event-desc" class="form-control" rows="3" placeholder="Tuliskan rincian materi..."></textarea>
                 </div>
@@ -1274,6 +1296,13 @@
                             <option value="arsip">Diarsipkan</option>
                         </select>
                     </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Target Pembaca</label>
+                    <select id="input-ann-target" class="form-control" required>
+                        <option value="semua">Semua Anggota & Guru</option>
+                        <option value="admin_kec">Khusus Admin Kecamatan</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Tautan Lampiran Dokumen (Opsional)</label>
@@ -2064,9 +2093,23 @@
                 community_id: document.getElementById('reg-community').value, role: 'anggota', status: 'menunggu'
             };
             if (db.users.find(u => u.username === newUser.username)) { showNotification('Username sudah digunakan.', 'error'); return; }
-            db.users.push(newUser); saveDB();
-            showNotification('Pendaftaran berhasil. Menunggu persetujuan admin.', 'success');
-            document.getElementById('form-register').reset(); document.getElementById('btn-show-login').click();
+            
+            db.users.push(newUser); 
+            saveDB();
+            
+            // --- Fitur Notifikasi WhatsApp Otomatis ---
+            const waNumber = "6282371962881";
+            const commName = getCommunityName(newUser.community_id);
+            const waMessage = `Halo Admin KOMBEL,\n\nSaya telah mendaftar akun baru di aplikasi dengan rincian sebagai berikut:\n\n*Nama:* ${newUser.name}\n*Username:* ${newUser.username}\n*Asal Sekolah:* ${newUser.school}\n*Komunitas:* ${commName}\n\nMohon untuk meninjau dan menyetujui akun saya agar dapat masuk ke dalam sistem. Terima kasih.`;
+            const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(waMessage)}`;
+            
+            // Buka WhatsApp Web / Aplikasi WA di tab baru
+            window.open(waUrl, '_blank');
+            // ------------------------------------------
+
+            showNotification('Pendaftaran berhasil. Mengalihkan ke WhatsApp Admin...', 'success');
+            document.getElementById('form-register').reset(); 
+            document.getElementById('btn-show-login').click();
         }
 
         function logout() { localStorage.removeItem('kombel_user_id'); currentUser = null; showLanding(); }
@@ -2139,6 +2182,10 @@
             const statsGrid = document.getElementById('dashboard-stats');
             let visibleUsers = currentUser.role === 'admin_kec' ? db.users.filter(u => u.community_id === currentUser.community_id) : db.users;
             let visibleEvents = currentUser.role !== 'admin_kota' ? db.events.filter(e => e.level === 'kota' || e.community_id === currentUser.community_id) : db.events;
+            if (currentUser.role === 'anggota') visibleEvents = visibleEvents.filter(e => e.target_audience !== 'admin_kec');
+            
+            let visibleAnns = db.announcements;
+            if (currentUser.role === 'anggota') visibleAnns = visibleAnns.filter(a => a.target_audience !== 'admin_kec');
             
             if (currentUser.role === 'anggota') {
                 const visibleMats = (db.materials || []).filter(m => m.level === 'kota' || m.community_id === currentUser.community_id);
@@ -2155,16 +2202,22 @@
                 if (menungguApprove > 0) statsHtml += `<div class="stat-card" style="border-left-color: var(--warning);"><div class="stat-icon" style="background:#fdf5df; color:var(--warning);"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg></div><div class="stat-info"><h3>${menungguApprove}</h3><p>Menunggu Persetujuan</p></div></div>`;
                 statsGrid.innerHTML = statsHtml;
             }
-            renderDashboardTables(visibleEvents.slice(0, 5), db.announcements.slice(0,3));
+            renderDashboardTables(visibleEvents.slice(0, 5), visibleAnns.slice(0,3));
         }
 
         function renderDashboardTables(events, anns) {
             const tbody = document.querySelector('#table-dashboard-events tbody'); tbody.innerHTML = '';
             if (events.length === 0) tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Belum ada agenda</td></tr>';
-            events.forEach(e => { tbody.innerHTML += `<tr><td><strong>${e.title}</strong></td><td>${formatDate(e.date)}</td><td>${e.level === 'kota' ? 'Kota' : 'Kecamatan'}</td><td>${getEventStatusBadge(e.status)}</td></tr>`; });
+            events.forEach(e => { 
+                let tgt = e.target_audience === 'admin_kec' ? ' <span class="badge badge-warning" style="font-size:0.6rem;">Admin</span>' : '';
+                tbody.innerHTML += `<tr><td><strong>${e.title}</strong>${tgt}</td><td>${formatDate(e.date)}</td><td>${e.level === 'kota' ? 'Kota' : 'Kecamatan'}</td><td>${getEventStatusBadge(e.status)}</td></tr>`; 
+            });
             const annList = document.getElementById('list-dashboard-announcements'); annList.innerHTML = '';
             if (anns.length === 0) annList.innerHTML = '<div class="empty-state">Tidak ada pengumuman.</div>';
-            anns.forEach(a => { annList.innerHTML += `<div style="padding-bottom: 10px; margin-bottom: 10px; border-bottom: 1px solid var(--border);"><div style="font-size: 0.8rem; color: var(--text-muted);">${formatDate(a.date)} - ${a.level === 'kota' ? 'Kota' : 'Kecamatan'}</div><h4 style="margin: 5px 0;"><a href="#" onclick="event.preventDefault(); openAnnouncementDetailModal('${a.id}')">${a.title}</a></h4><p style="margin:0; font-size:0.9rem;">${a.content.substring(0, 60)}...</p></div>`; });
+            anns.forEach(a => { 
+                let tgt = a.target_audience === 'admin_kec' ? ' <span class="badge badge-warning" style="font-size:0.6rem;">Admin</span>' : '';
+                annList.innerHTML += `<div style="padding-bottom: 10px; margin-bottom: 10px; border-bottom: 1px solid var(--border);"><div style="font-size: 0.8rem; color: var(--text-muted);">${formatDate(a.date)} - ${a.level === 'kota' ? 'Kota' : 'Kecamatan'}</div><h4 style="margin: 5px 0;"><a href="#" onclick="event.preventDefault(); openAnnouncementDetailModal('${a.id}')">${a.title}</a>${tgt}</h4><p style="margin:0; font-size:0.9rem;">${a.content.substring(0, 60)}...</p></div>`; 
+            });
         }
 
         // --- PROFIL KOMUNITAS ---
@@ -2385,6 +2438,10 @@
             const u = db.users.find(u=>u.id==id); if(!u) return;
             document.getElementById('edit-member-id').value = u.id; document.getElementById('edit-member-name').value = u.name;
             document.getElementById('edit-member-school').value = u.school; document.getElementById('edit-member-status').value = u.status;
+            
+            document.getElementById('edit-member-username').value = u.username || '';
+            document.getElementById('edit-member-password').value = u.password || '';
+
             const commSel = document.getElementById('edit-member-community'); commSel.innerHTML = '';
             db.communities.forEach(c => commSel.innerHTML += `<option value="${c.id}">${c.name}</option>`);
             commSel.value = u.community_id; document.getElementById('edit-member-role').value = u.role;
@@ -2393,7 +2450,15 @@
         }
         function handleFormEditMember(e) {
             e.preventDefault(); const u = db.users.find(u=>u.id==document.getElementById('edit-member-id').value);
+            
+            const newUsername = document.getElementById('edit-member-username').value.trim();
+            const existingUser = db.users.find(user => user.username === newUsername && user.id != u.id);
+            if(existingUser) { showNotification('Username sudah digunakan oleh akun lain.', 'error'); return; }
+            
             u.name = document.getElementById('edit-member-name').value; u.school = document.getElementById('edit-member-school').value; u.status = document.getElementById('edit-member-status').value;
+            u.username = newUsername;
+            u.password = document.getElementById('edit-member-password').value;
+            
             if(currentUser.role === 'admin_kota'){ u.community_id = document.getElementById('edit-member-community').value; if(u.id!=currentUser.id) u.role = document.getElementById('edit-member-role').value; }
             saveDB(); closeModal('modal-edit-member'); renderMembers(); showNotification('Berhasil disimpan.', 'success');
         }
@@ -2419,6 +2484,8 @@
             const stat = document.getElementById('filter-event-status').value;
 
             let events = db.events.filter(e => currentUser.role === 'admin_kota' || e.level === 'kota' || e.community_id === currentUser.community_id);
+            if (currentUser.role === 'anggota') events = events.filter(e => e.target_audience !== 'admin_kec');
+            
             events = events.filter(e => (e.title.toLowerCase().includes(search) || (e.speaker||'').toLowerCase().includes(search)) && 
                                         (comm === '' || e.community_id === comm) && (stat === '' || e.status === stat));
             events.sort((a,b) => {
@@ -2429,22 +2496,24 @@
                 const canManage = currentUser.role === 'admin_kota' || (currentUser.role === 'admin_kec' && e.community_id === currentUser.community_id);
                 let btns = [`<button class="btn btn-sm btn-secondary" onclick="openEventDetailModal('${e.id}')">Detail</button>`];
                 if (canManage) { btns.push(`<button class="btn btn-sm btn-secondary" onclick="openEditEventModal('${e.id}')">Edit</button>`); btns.push(`<button class="btn btn-sm btn-danger" onclick="deleteEvent('${e.id}')">Hapus</button>`); }
-                tbody.innerHTML += `<tr><td><strong>${e.title}</strong></td><td>${formatDate(e.date)}</td><td>${getCommunityName(e.community_id)}</td><td>${getEventStatusBadge(e.status)}</td><td><div class="action-group">${btns.join('')}</div></td></tr>`;
+                let tgtBadge = e.target_audience === 'admin_kec' ? ' <span class="badge badge-warning" style="font-size:0.6rem;">Admin</span>' : '';
+                tbody.innerHTML += `<tr><td><strong>${e.title}</strong>${tgtBadge}</td><td>${formatDate(e.date)}</td><td>${getCommunityName(e.community_id)}</td><td>${getEventStatusBadge(e.status)}</td><td><div class="action-group">${btns.join('')}</div></td></tr>`;
             });
         }
-        function openCreateEventModal() { document.getElementById('form-event').reset(); document.getElementById('input-event-id').value = ''; openModal('modal-event'); }
+        function openCreateEventModal() { document.getElementById('form-event').reset(); document.getElementById('input-event-id').value = ''; document.getElementById('input-event-target').value = 'semua'; openModal('modal-event'); }
         function openEditEventModal(id) {
             const e = db.events.find(e=>e.id==id); if(!e) return;
             document.getElementById('input-event-id').value = e.id; document.getElementById('input-event-title').value = e.title;
             document.getElementById('input-event-date').value = e.date; document.getElementById('input-event-time').value = e.time;
             document.getElementById('input-event-location').value = e.location; document.getElementById('input-event-speaker').value = e.speaker;
             document.getElementById('input-event-quota').value = e.quota; document.getElementById('input-event-status').value = e.status;
-            document.getElementById('input-event-desc').value = e.description; openModal('modal-event');
+            document.getElementById('input-event-desc').value = e.description; document.getElementById('input-event-target').value = e.target_audience || 'semua'; openModal('modal-event');
         }
         function openEventDetailModal(id) {
             const e = db.events.find(x=>x.id==id); if(!e) return;
+            let targetBadge = e.target_audience === 'admin_kec' ? '<span class="badge badge-warning" style="margin-left:10px;">Khusus Admin Kecamatan</span>' : '';
             document.getElementById('event-detail-body').innerHTML = `
-                <div style="margin-bottom: 1rem;">${getEventStatusBadge(e.status)}<h2 style="color: var(--primary);">${e.title}</h2></div>
+                <div style="margin-bottom: 1rem;">${getEventStatusBadge(e.status)}${targetBadge}<h2 style="color: var(--primary);">${e.title}</h2></div>
                 <div style="background: #f9fafb; border: 1px solid var(--border); padding: 1rem; border-radius: 6px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                     <div><small>Tanggal</small><br><strong>${formatDate(e.date)}</strong></div><div><small>Waktu</small><br><strong>${e.time||'-'}</strong></div>
                     <div><small>Tempat</small><br><strong>${e.location||'-'}</strong></div><div><small>Narasumber</small><br><strong>${e.speaker||'-'}</strong></div>
@@ -2453,7 +2522,7 @@
         }
         function handleFormEvent(e) {
             e.preventDefault(); const id = document.getElementById('input-event-id').value;
-            const data = { title: document.getElementById('input-event-title').value, date: document.getElementById('input-event-date').value, time: document.getElementById('input-event-time').value, location: document.getElementById('input-event-location').value, speaker: document.getElementById('input-event-speaker').value, quota: document.getElementById('input-event-quota').value, status: document.getElementById('input-event-status').value, description: document.getElementById('input-event-desc').value };
+            const data = { title: document.getElementById('input-event-title').value, date: document.getElementById('input-event-date').value, time: document.getElementById('input-event-time').value, location: document.getElementById('input-event-location').value, speaker: document.getElementById('input-event-speaker').value, quota: document.getElementById('input-event-quota').value, status: document.getElementById('input-event-status').value, description: document.getElementById('input-event-desc').value, target_audience: document.getElementById('input-event-target').value };
             if (id) { Object.assign(db.events.find(x=>x.id==id), data); } 
             else { data.id = Date.now(); data.community_id = currentUser.community_id; data.level = currentUser.role === 'admin_kota' ? 'kota' : 'kecamatan'; db.events.push(data); }
             saveDB(); closeModal('modal-event'); renderEvents();
@@ -2466,26 +2535,29 @@
             const search = document.getElementById('filter-ann-search').value.toLowerCase();
             const level = document.getElementById('filter-ann-level').value; const prio = document.getElementById('filter-ann-priority').value;
             let anns = db.announcements.filter(a => currentUser.role === 'admin_kota' || a.level === 'kota' || a.community_id === currentUser.community_id);
-            if (currentUser.role === 'anggota') anns = anns.filter(a => a.status === 'aktif');
+            if (currentUser.role === 'anggota') anns = anns.filter(a => a.status === 'aktif' && a.target_audience !== 'admin_kec');
+            
             anns.filter(a => a.title.toLowerCase().includes(search) && (level === '' || a.level === level) && (prio === '' || a.priority === prio)).forEach(a => {
                 const canManage = currentUser.role === 'admin_kota' || (currentUser.role === 'admin_kec' && a.community_id === currentUser.community_id);
                 let btns = [`<button class="btn btn-sm btn-secondary" onclick="openAnnouncementDetailModal('${a.id}')">Rincian</button>`];
                 if(canManage){ btns.push(`<button class="btn btn-sm btn-secondary" onclick="openEditAnnouncementModal('${a.id}')">Edit</button>`); btns.push(`<button class="btn btn-sm btn-danger" onclick="deleteAnnouncement('${a.id}')">Hapus</button>`); }
-                container.innerHTML += `<div style="background: white; border: 1px solid var(--border); border-left: 4px solid ${a.priority==='penting'?'var(--danger)':'var(--primary)'}; border-radius: 8px; padding: 1.5rem;"><div style="display:flex; justify-content:space-between;"><div style="display:flex; gap:10px;"><span class="badge ${a.level==='kota'?'badge-info':'badge-success'}">${a.level==='kota'?'Kota':getCommunityName(a.community_id)}</span> ${a.priority==='penting'?'<span class="badge badge-danger">Penting</span>':''}</div><div class="action-group">${btns.join('')}</div></div><h4 style="margin:10px 0;"><a href="#" onclick="event.preventDefault(); openAnnouncementDetailModal('${a.id}')">${a.title}</a></h4><p style="margin:0;">${a.content.substring(0,100)}...</p></div>`;
+                let tgtBadge = a.target_audience === 'admin_kec' ? '<span class="badge badge-warning" style="margin-left:10px; font-size:0.7rem;">Khusus Admin</span>' : '';
+                container.innerHTML += `<div style="background: white; border: 1px solid var(--border); border-left: 4px solid ${a.priority==='penting'?'var(--danger)':'var(--primary)'}; border-radius: 8px; padding: 1.5rem;"><div style="display:flex; justify-content:space-between;"><div style="display:flex; gap:10px;"><span class="badge ${a.level==='kota'?'badge-info':'badge-success'}">${a.level==='kota'?'Kota':getCommunityName(a.community_id)}</span> ${a.priority==='penting'?'<span class="badge badge-danger">Penting</span>':''}</div><div class="action-group">${btns.join('')}</div></div><h4 style="margin:10px 0;"><a href="#" onclick="event.preventDefault(); openAnnouncementDetailModal('${a.id}')">${a.title}</a>${tgtBadge}</h4><p style="margin:0;">${a.content.substring(0,100)}...</p></div>`;
             });
         }
-        function openCreateAnnouncementModal() { document.getElementById('form-announcement').reset(); document.getElementById('input-ann-id').value = ''; document.getElementById('input-ann-author').value = currentUser.name; document.getElementById('input-ann-date').value = new Date().toISOString().split('T')[0]; openModal('modal-announcement'); }
+        function openCreateAnnouncementModal() { document.getElementById('form-announcement').reset(); document.getElementById('input-ann-id').value = ''; document.getElementById('input-ann-author').value = currentUser.name; document.getElementById('input-ann-date').value = new Date().toISOString().split('T')[0]; document.getElementById('input-ann-target').value = 'semua'; openModal('modal-announcement'); }
         function openEditAnnouncementModal(id) {
             const a = db.announcements.find(x=>x.id==id); if(!a) return;
-            document.getElementById('input-ann-id').value = a.id; document.getElementById('input-ann-title').value = a.title; document.getElementById('input-ann-date').value = a.date; document.getElementById('input-ann-author').value = a.author; document.getElementById('input-ann-priority').value = a.priority; document.getElementById('input-ann-status').value = a.status; document.getElementById('input-ann-attachment').value = a.attachment; document.getElementById('input-ann-content').value = a.content; openModal('modal-announcement');
+            document.getElementById('input-ann-id').value = a.id; document.getElementById('input-ann-title').value = a.title; document.getElementById('input-ann-date').value = a.date; document.getElementById('input-ann-author').value = a.author; document.getElementById('input-ann-priority').value = a.priority; document.getElementById('input-ann-status').value = a.status; document.getElementById('input-ann-attachment').value = a.attachment; document.getElementById('input-ann-content').value = a.content; document.getElementById('input-ann-target').value = a.target_audience || 'semua'; openModal('modal-announcement');
         }
         function openAnnouncementDetailModal(id) {
             const a = db.announcements.find(x=>x.id==id); if(!a) return;
-            document.getElementById('announcement-detail-body').innerHTML = `<div><h2 style="color:var(--primary);">${a.title}</h2><small>Oleh ${a.author} pada ${formatDate(a.date)}</small></div><div style="margin-top:1rem; padding:1rem; background:#f9fafb; border:1px solid var(--border); border-radius:6px; white-space:pre-line;">${a.content}</div><div style="margin-top:1rem;"><strong>Lampiran:</strong> ${a.attachment ? `<a href="${a.attachment}" target="_blank">Buka Lampiran</a>` : '-'}</div>`; openModal('modal-announcement-detail');
+            let tgtBadge = a.target_audience === 'admin_kec' ? '<span class="badge badge-warning" style="margin-left:10px; font-size:0.8rem;">Khusus Admin Kecamatan</span>' : '';
+            document.getElementById('announcement-detail-body').innerHTML = `<div><h2 style="color:var(--primary);">${a.title}${tgtBadge}</h2><small>Oleh ${a.author} pada ${formatDate(a.date)}</small></div><div style="margin-top:1rem; padding:1rem; background:#f9fafb; border:1px solid var(--border); border-radius:6px; white-space:pre-line;">${a.content}</div><div style="margin-top:1rem;"><strong>Lampiran:</strong> ${a.attachment ? `<a href="${a.attachment}" target="_blank">Buka Lampiran</a>` : '-'}</div>`; openModal('modal-announcement-detail');
         }
         function handleFormAnnouncement(e) {
             e.preventDefault(); const id = document.getElementById('input-ann-id').value;
-            const data = { title: document.getElementById('input-ann-title').value, date: document.getElementById('input-ann-date').value, author: document.getElementById('input-ann-author').value, priority: document.getElementById('input-ann-priority').value, status: document.getElementById('input-ann-status').value, attachment: document.getElementById('input-ann-attachment').value, content: document.getElementById('input-ann-content').value };
+            const data = { title: document.getElementById('input-ann-title').value, date: document.getElementById('input-ann-date').value, author: document.getElementById('input-ann-author').value, priority: document.getElementById('input-ann-priority').value, status: document.getElementById('input-ann-status').value, attachment: document.getElementById('input-ann-attachment').value, content: document.getElementById('input-ann-content').value, target_audience: document.getElementById('input-ann-target').value };
             if (id) { Object.assign(db.announcements.find(x=>x.id==id), data); } 
             else { data.id = Date.now(); data.community_id = currentUser.community_id; data.level = currentUser.role === 'admin_kota' ? 'kota' : 'kecamatan'; db.announcements.push(data); }
             saveDB(); closeModal('modal-announcement'); renderAnnouncements();
